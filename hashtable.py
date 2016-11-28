@@ -1,4 +1,4 @@
-#!python
+#!python#
 
 from linkedlist import LinkedList
 
