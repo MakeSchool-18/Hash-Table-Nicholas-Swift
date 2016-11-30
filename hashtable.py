@@ -20,12 +20,18 @@ class HashTable(object):
 
         return hash(key) % len(self.buckets)
 
+    def _bucket(self, key):
+        """Return the bucket where the given key would be stored"""
+
+        index = self._bucket_index(key)
+        return self.buckets[index]
+
     def length(self):
         """Return the length of this hash table by traversing its buckets"""
 
         num = 0
-        for i in self.buckets:
-            num += i.length()
+        for bucket in self.buckets:
+            num += bucket.length()
         return num
 
     def contains(self, key):
@@ -41,8 +47,7 @@ class HashTable(object):
         """Return the value associated with the given key, or raise KeyError"""
 
         # Find bucket
-        bucketIndex = self._bucket_index(key)
-        bucket = self.buckets[bucketIndex]
+        bucket = self._bucket(key)
 
         # Check if key is already in bucket
         for node in bucket:
@@ -55,11 +60,10 @@ class HashTable(object):
         """Insert or update the given key with its associated value"""
 
         # Find bucket
-        bucketIndex = self._bucket_index(key)
-        bucket = self.buckets[bucketIndex]
+        bucket = self._bucket(key)
 
         # Check if key is already in bucket
-        for i, node in enumerate(bucket):
+        for node in bucket:
             if key == node.data[0]:
                 new_tuple = (node.data[0], value)
                 node.data = new_tuple
@@ -73,8 +77,7 @@ class HashTable(object):
         """Delete the given key from this hash table, or raise KeyError"""
 
         # Find bucket
-        bucketIndex = self._bucket_index(key)
-        bucket = self.buckets[bucketIndex]
+        bucket = self._bucket(key)
 
         # Check if key is in bucket
         for node in bucket:
@@ -89,8 +92,9 @@ class HashTable(object):
         """Return a list of all keys in this hash table"""
 
         keys = []
-        for ll in self.buckets:
-            for node in ll:
+        for bucket in self.buckets:
+            #keys.extend(map(itertools.itemgetter(0), bucket.__iter__()))
+            for node in bucket:
                 keys.append(node.data[0])
         return keys
 
@@ -98,10 +102,19 @@ class HashTable(object):
         """Return a list of all values in this hash table"""
 
         values = []
-        for ll in self.buckets:
-            for node in ll:
+        for bucket in self.buckets:
+            for node in bucket:
                 values.append(node.data[1])
         return values
+
+    def items(self):
+        pass
+
+    def __iter__(self):
+        for bucket in self.buckets:
+            if bucket:
+                for node in bucket:
+                    yield node
 
 
 if __name__ == '__main__':

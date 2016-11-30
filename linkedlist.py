@@ -139,6 +139,13 @@ class LinkedList(object):
             yield current
             current = current.next
 
+    def __len__(self):
+        return self.length()
+        # return self.size
+
+    def __nonzero__(self):
+        return not self.is_empty()
+
 
 def test_linked_list():
     # Test appending
